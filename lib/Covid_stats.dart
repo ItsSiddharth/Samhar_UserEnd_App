@@ -3,6 +3,65 @@ import 'HomePage.dart';
 import 'package:flutter_circular_chart/flutter_circular_chart.dart';
 import 'Helper.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:foreground_service/foreground_service.dart';
+import 'package:geolocator/geolocator.dart';
+import 'coordinate.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+var childRef;
+
+Future<void> addNewEntry(latitude, longitude) async {
+  Coordinate coordinate = Coordinate(
+      latitude: latitude,
+      longitude: longitude,
+      datetime: DateTime.now().toString());
+  print(coordinate.latitude);
+  print(coordinate.longitude);
+  return Future.value();
+}
+
+void foregroundServiceFunction() async {
+  Position position = await Geolocator()
+      .getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  addNewEntry(position.latitude, position.longitude);
+}
+
+void maybeStartFGS() async {
+  print('Starting FGS');
+  // GeolocationStatus geolocationStatus =
+  //     await Geolocator().checkGeolocationPermissionStatus();
+  // print(geolocationStatus);
+  // if ((geolocationStatus == GeolocationStatus.denied ||
+  //     geolocationStatus == GeolocationStatus.disabled)) {
+  //   print('Location permission not given! Asking for permission');
+  //   await Permission.locationWhenInUse.request();
+  // } else {
+  //   return;
+  // }
+  print('Done!');
+  if (!(await ForegroundService.foregroundServiceIsStarted())) {
+    await ForegroundService.setServiceIntervalSeconds(
+        5); //necessity of editMode is dubious (see function comments) await ForegroundService.notification.startEditMode();
+    await ForegroundService.notification
+        .setTitle("Location stream is ON");
+    await ForegroundService.notification
+        .setText("You're data is in safe hands");
+
+    await ForegroundService.notification.finishEditMode();
+
+    await ForegroundService.startForegroundService(foregroundServiceFunction);
+    await ForegroundService.getWakeLock();
+  }
+  await ForegroundService.notification
+      .setPriority(AndroidNotificationPriority.LOW);
+}
+
+class ScreenWithIndex {
+  final Widget screen;
+  final int index;
+
+  ScreenWithIndex({this.screen, this.index});
+}
 
 
 final GlobalKey<AnimatedCircularChartState> _chartKey =
@@ -16,12 +75,129 @@ class CovidStats extends StatefulWidget {
 }
 
 class _CovidStatsState extends State<CovidStats> {
+
+  @override
+  void initState() {
+    //533
+    _initializePage();
+    super.initState();
+    floatingIcon = Icons.play_arrow;
+  }
+
+  void _afterLayout(_) {}
+
+  void _showDialog() {
+    showDialog(
+        context: context,
+        builder: (BuildContext ctx) {
+          return AlertDialog(
+            title: Text(
+              'We are dedicated to protect you',
+              style:
+              TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+            content: Text(
+              'But we will need your cooperation for that, please allow it to track your location',
+              style: TextStyle(color: Colors.grey),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(
+                  'NO',
+                  style: TextStyle(
+                    color: Color(0xFFFA6400),
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text('I AM IN',
+                    style: TextStyle(
+                      color: Color(0xFFFA6400),
+                      fontWeight: FontWeight.w400,
+                    )),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  GeolocationStatus geolocationStatus =
+                  await Geolocator().checkGeolocationPermissionStatus();
+                  if ((geolocationStatus == GeolocationStatus.denied ||
+                      geolocationStatus == GeolocationStatus.disabled)) {
+                    print(
+                        'Location permission not given! Asking for permission');
+                    final PermissionStatus permissionStatus =
+                    await Permission.locationWhenInUse.request();
+                    if (permissionStatus == PermissionStatus.granted) {
+                      maybeStartFGS();
+                    } else {}
+                  } else {
+                    maybeStartFGS();
+                  }
+                },
+              ),
+            ],
+          );
+        });
+  }
+  void _initializePage() async {
+    //await _listenLocation();
+    // timer = Timer.periodic(Duration(seconds: 10), (Timer t) => addNewEntry());
+    GeolocationStatus geolocationStatus =
+    await Geolocator().checkGeolocationPermissionStatus();
+    print('((_))');
+    print(geolocationStatus);
+    if (geolocationStatus == GeolocationStatus.granted) {
+      maybeStartFGS();
+    } else if ((geolocationStatus == GeolocationStatus.denied ||
+        geolocationStatus == GeolocationStatus.disabled ||
+        geolocationStatus == GeolocationStatus.restricted ||
+        geolocationStatus == GeolocationStatus.unknown)) {
+      print('Location permission not given! Asking for permission');
+      _showDialog();
+    } else {
+      maybeStartFGS();
+    }
+    WidgetsBinding.instance.addPostFrameCallback(_afterLayout);
+    //_setUpListener();
+  }
+
+  var floatingIcon;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF03D9BF),
         title: Text('Stats'),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 27.0),
+        child: FloatingActionButton(
+          onPressed: () async {
+            final fgsIsRunning = await ForegroundService.foregroundServiceIsStarted();
+            if (fgsIsRunning) {
+              setState(() {
+                floatingIcon = Icons.play_arrow;
+              });
+              await ForegroundService.stopForegroundService();
+              print('Foreground process stopped');
+            } else {
+              setState(() {
+                floatingIcon = Icons.pause;
+              });
+              maybeStartFGS();
+              print('Foreground process started!');
+            }
+          },
+          child: Tooltip(
+            showDuration: Duration(),
+            message: 'Stop Collecting Location Data',
+            child: Icon(floatingIcon),
+          ),
+          backgroundColor: Colors.red,
+        ),
       ),
       drawer: Drawer(
         child: ListView(
