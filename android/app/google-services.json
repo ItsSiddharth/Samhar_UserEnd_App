@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "378910846352",
+    "firebase_url": "https://samhar-21151.firebaseio.com",
+    "project_id": "samhar-21151",
+    "storage_bucket": "samhar-21151.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378910846352:android:b27e3303c5794fe1f69715",
+        "android_client_info": {
+          "package_name": "com.siddmenon.samhar_admin"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "378910846352-5afjkkuarnjvsrkel63ctiiep5gpphbt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK1vfxgGqvTcn8htPxAnOSPdiBSOTAorA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "378910846352-5afjkkuarnjvsrkel63ctiiep5gpphbt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:378910846352:android:43e47af83cf14818f69715",
+        "android_client_info": {
+          "package_name": "com.siddmenon.samhar_user"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "378910846352-5afjkkuarnjvsrkel63ctiiep5gpphbt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCK1vfxgGqvTcn8htPxAnOSPdiBSOTAorA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "378910846352-5afjkkuarnjvsrkel63ctiiep5gpphbt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
