@@ -3,11 +3,13 @@ class Coordinate {
   final double latitude;
   final double longitude;
   final String datetime;
+  final String email;
 
   Coordinate({
     this.latitude,
     this.longitude,
-    this.datetime
+    this.datetime,
+    this.email
   });
 
   factory	Coordinate.fromJson(Map<dynamic, dynamic> json) {

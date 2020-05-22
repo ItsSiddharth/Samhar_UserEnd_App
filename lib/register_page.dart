@@ -137,11 +137,11 @@ class _RegisterPageState extends State<RegisterPage> {
                           });
                           try {
                             print("###################");
-//                            await db.collection('$email').add({
-//                              'AADHAR': AADHAR,
-//                              'PhNo': PhoneNumber,
-//                              'Status' : ''
-//                            });
+                            await db.collection('$email').document("doc").setData({
+                              'AADHAR': '',
+                              'PhNo': '',
+                              'Status' : ''
+                            });
                             final newUser = await _auth.createUserWithEmailAndPassword(
                                 email: email.trim(), password: password);
                             if(newUser!= null){

@@ -6,8 +6,6 @@ import 'login_page.dart';
 import 'Covid_stats.dart';
 
 
-
-
 const myTask = "syncWithTheBackEnd";
 
 

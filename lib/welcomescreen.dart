@@ -55,14 +55,14 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                     ),
                   ),
                   Text(
-                    'WATCH DOG',
+                    'Third Eye',
                     style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
+                        fontSize: 40.0,
+                        fontWeight: FontWeight.w900,
                     ),
                   ),
                   SizedBox(
-                    height: 150,
+                    height: 130,
                   ),
                   FlatButton(
                     onPressed: (){

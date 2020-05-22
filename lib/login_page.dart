@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:samhar_user/Covid_stats.dart';
 import 'HomePage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends StatefulWidget {
   static const String id = 'LoginPage';
@@ -16,6 +17,24 @@ class _LoginPageState extends State<LoginPage> {
   String password = '';
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
+  FirebaseUser loggedInUser;
+
+  void getCurrentUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+        email = loggedInUser.email.toString();
+        print(email);
+        print("####^^%^%^%&^&%&^%&^");
+        prefs.setString('email', email);
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -108,6 +127,7 @@ class _LoginPageState extends State<LoginPage> {
                               if (newUser != null) {
                                 Navigator.pushNamed(context, CovidStats.id);
                                 setState(() {
+                                  getCurrentUser();
                                   showSpinner = false;
                                 });
                               }

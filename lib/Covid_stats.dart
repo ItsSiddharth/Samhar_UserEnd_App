@@ -7,17 +7,39 @@ import 'package:foreground_service/foreground_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'coordinate.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'dart:async';
+import 'package:http/http.dart' as http;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 var childRef;
+FirebaseUser loggedInUser;
+String lat;
+String long;
+String apisender;
+
+
 
 Future<void> addNewEntry(latitude, longitude) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
   Coordinate coordinate = Coordinate(
       latitude: latitude,
       longitude: longitude,
       datetime: DateTime.now().toString());
-  print(coordinate.latitude);
-  print(coordinate.longitude);
-  return Future.value();
+  lat = coordinate.latitude.toString();
+  long = coordinate.longitude.toString();
+  apisender = prefs.getString('email');
+  print(apisender);
+  try {
+    http.Response response = await http.get(
+        'http://192.168.43.129:5000/checkpost/$apisender/$lat/$long');
+  }
+  catch (e){
+    print(e);
+  }
+//  print(coordinate.latitude);
+//  print(coordinate.longitude);
+  return Future.delayed(const Duration(minutes: 1));
 }
 
 void foregroundServiceFunction() async {
@@ -28,20 +50,9 @@ void foregroundServiceFunction() async {
 
 void maybeStartFGS() async {
   print('Starting FGS');
-  // GeolocationStatus geolocationStatus =
-  //     await Geolocator().checkGeolocationPermissionStatus();
-  // print(geolocationStatus);
-  // if ((geolocationStatus == GeolocationStatus.denied ||
-  //     geolocationStatus == GeolocationStatus.disabled)) {
-  //   print('Location permission not given! Asking for permission');
-  //   await Permission.locationWhenInUse.request();
-  // } else {
-  //   return;
-  // }
   print('Done!');
   if (!(await ForegroundService.foregroundServiceIsStarted())) {
-    await ForegroundService.setServiceIntervalSeconds(
-        5); //necessity of editMode is dubious (see function comments) await ForegroundService.notification.startEditMode();
+    await ForegroundService.setServiceIntervalSeconds(5); //necessity of editMode is dubious (see function comments) await ForegroundService.notification.startEditMode();
     await ForegroundService.notification
         .setTitle("Location stream is ON");
     await ForegroundService.notification
@@ -76,12 +87,27 @@ class CovidStats extends StatefulWidget {
 
 class _CovidStatsState extends State<CovidStats> {
 
+  final _auth = FirebaseAuth.instance;
+  String email;
+
   @override
   void initState() {
     //533
     _initializePage();
     super.initState();
-    floatingIcon = Icons.play_arrow;
+    floatingIcon = Icons.stop;
+    getCurrentUser();
+  }
+  void getCurrentUser() async {
+    try {
+      final user = await _auth.currentUser();
+      if (user != null) {
+        loggedInUser = user;
+        email = loggedInUser.email.toString();
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   void _afterLayout(_) {}
