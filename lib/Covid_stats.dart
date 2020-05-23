@@ -32,7 +32,7 @@ Future<void> addNewEntry(latitude, longitude) async {
   print(apisender);
   try {
     http.Response response = await http.get(
-        'http://192.168.43.129:5000/checkpost/$apisender/$lat/$long');
+        'https://samhar-user-end.herokuapp.com/checkpost/$apisender/$lat/$long');
   }
   catch (e){
     print(e);
@@ -313,8 +313,7 @@ class _AndroidFirstPageState extends State<AndroidFirstPage> with AutomaticKeepA
     setState(() {
       busy = true;
     });
-    NetworkHelper covidData =
-    NetworkHelper('https://pomber.github.io/covid19/timeseries.json');
+    NetworkHelper covidData = NetworkHelper('https://pomber.github.io/covid19/timeseries.json');
     var globalData = await covidData.getData();
     print(globalData["India"].reversed.toList()[0]);
 
@@ -331,10 +330,8 @@ class _AndroidFirstPageState extends State<AndroidFirstPage> with AutomaticKeepA
         totalCases = recovered + deaths + confirmed;
         prevTotalCases = prevDayRecovered + prevDayDeaths + prevDayConfirmed;
         deathPercentage = ((deaths / totalCases) * 100).toStringAsFixed(2);
-        recoveredPercentage =
-            ((recovered / totalCases) * 100).toStringAsFixed(2);
-        confirmedPercentage =
-            ((confirmed / totalCases) * 100).toStringAsFixed(2);
+        recoveredPercentage = ((recovered / totalCases) * 100).toStringAsFixed(2);
+        confirmedPercentage = ((confirmed / totalCases) * 100).toStringAsFixed(2);
         valueReceived = true;
       });
     }

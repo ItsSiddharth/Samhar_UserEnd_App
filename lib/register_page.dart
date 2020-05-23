@@ -16,6 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   String PhoneNumber ;
   String AADHAR ;
   String id ;
+
   final _auth = FirebaseAuth.instance;
   bool showSpinner = false;
 
@@ -112,6 +113,19 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                       ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 8.0, right: 20),
+                        child: TextField(
+                          textAlign: TextAlign.left,
+                          onChanged: (value) {
+                            //Do something with the user input.
+                            AADHAR = value.toString();
+                          },
+                          decoration: InputDecoration(
+                              hintText: 'AADHAR Number'
+                          ),
+                        ),
+                      ),
                       SizedBox(
                         height: 40,
                         width: 30,
@@ -138,9 +152,9 @@ class _RegisterPageState extends State<RegisterPage> {
                           try {
                             print("###################");
                             await db.collection('$email').document("doc").setData({
-                              'AADHAR': '',
-                              'PhNo': '',
-                              'Status' : ''
+                              'AADHAR': '$AADHAR',
+                              'PhNo': '$PhoneNumber',
+                              'Status' : 'Not Updated',
                             });
                             final newUser = await _auth.createUserWithEmailAndPassword(
                                 email: email.trim(), password: password);
