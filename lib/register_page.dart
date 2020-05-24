@@ -113,19 +113,6 @@ class _RegisterPageState extends State<RegisterPage> {
                           ),
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 8.0, right: 20),
-                        child: TextField(
-                          textAlign: TextAlign.left,
-                          onChanged: (value) {
-                            //Do something with the user input.
-                            AADHAR = value.toString();
-                          },
-                          decoration: InputDecoration(
-                              hintText: 'AADHAR Number'
-                          ),
-                        ),
-                      ),
                       SizedBox(
                         height: 40,
                         width: 30,
@@ -153,7 +140,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             print("###################");
                             await db.collection('$email').document("doc").setData({
                               'AADHAR': '$AADHAR',
-                              'PhNo': '$PhoneNumber',
+                              'Mobile': '$PhoneNumber',
                               'Status' : 'Not Updated',
                             });
                             final newUser = await _auth.createUserWithEmailAndPassword(

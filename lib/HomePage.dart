@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    super.initState();
     getCurrentUser();
+    super.initState();
 //    readData();
   }
 //
@@ -81,15 +81,22 @@ class _HomePageState extends State<HomePage> {
                     width: 20,
                     height: 20,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(20),),
-                      color: doc.data['Status'].toString() =='Mid' ? Colors.orange: doc.data['Status'].toString() =='Low' ? Colors.green:Colors.red,
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                      color: doc.data['Status'].toString() == 'Mid'
+                          ? Colors.orange
+                          : doc.data['Status'].toString() == 'Low'
+                              ? Colors.green
+                              : Colors.red,
                     ),
                   ),
                 ],
               ),
             ),
             QrImage(
-              data: '{"0": ["${doc.data['AADHAR']}", "${doc.data['Mobile']}", "${doc.data['Status']}"]}',
+              data:
+                  '{"0": ["${doc.data['AADHAR']}", "${doc.data['Mobile']}", "${doc.data['Status']}"]}',
 //                {"0": ["255359739586.0", "8472699987.0", "High"]}
             ),
           ],
@@ -100,29 +107,31 @@ class _HomePageState extends State<HomePage> {
 
 //  color: Category=='Mid' ? Colors.orange: Category=='Low' ? Colors.green:Colors.red,   ${doc.data['Status']}
 
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        home: Scaffold(
-          appBar: AppBar(
-            backgroundColor: Color(0xFF03D9BF),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text("User Logged In"),
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Color(0xFF03D9BF),
+          title: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text("User Logged In"),
               FlatButton(
                 onPressed: () {
-                 setState(() {
-                   showSpinner = true;
-                 });
+                  setState(() {
+                    showSpinner = true;
+                  });
                 },
-                child: Icon(Icons.refresh, color: Colors.white,),
+                child: Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                ),
               )
-              ],
-            ),
+            ],
           ),
-          drawer: Drawer(
+        ),
+        drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
             children: <Widget>[
@@ -132,19 +141,19 @@ class _HomePageState extends State<HomePage> {
                 ),
                 child: Center(
                     child: Container(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: <Widget>[
-                          Text(
-                            'USER',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 24,
-                            ),
-                          ),
-                        ],
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(
+                        'USER',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                        ),
                       ),
-                    )),
+                    ],
+                  ),
+                )),
               ),
               Padding(
                 padding: const EdgeInsets.all(10.0),
@@ -154,7 +163,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: FlatButton(
                     child: Text('COVID-19'),
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.pushNamed(context, CovidStats.id);
                     },
                   ),
@@ -168,7 +177,7 @@ class _HomePageState extends State<HomePage> {
                   ),
                   child: FlatButton(
                     child: Text('Your Covid Prediction'),
-                    onPressed: (){
+                    onPressed: () {
                       Navigator.pushNamed(context, HomePage.id);
                     },
                   ),
@@ -177,35 +186,36 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-          body: Center(
-              child: showSpinner ? Column(
-            children: <Widget>[
-              StreamBuilder<QuerySnapshot>(
-                stream: _fireStore.collection(email).snapshots(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return Padding(
-                      padding: const EdgeInsets.all(20.0),
-                      child: Column(
-                          children: snapshot.data.documents
-                              .map((doc) => buildItem(doc))
-                              .toList()),
-                    );
-                  } else {
-                    print('LOL');
-                    return Container(
-                      color: Colors.white,
-                    );
-                  }
-                },
-              )
-            ],
-          ) : Container(
-                child: Center(
-                  child: Text('Loading ....'),
-                ),
-              )
-        ),
+        body: Center(
+            child: showSpinner
+                ? Column(
+                    children: <Widget>[
+                      StreamBuilder<QuerySnapshot>(
+                        stream: _fireStore.collection(email).snapshots(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return Padding(
+                              padding: const EdgeInsets.all(20.0),
+                              child: Column(
+                                  children: snapshot.data.documents
+                                      .map((doc) => buildItem(doc))
+                                      .toList()),
+                            );
+                          } else {
+                            print('LOL');
+                            return Container(
+                              color: Colors.white,
+                            );
+                          }
+                        },
+                      )
+                    ],
+                  )
+                : Container(
+                    child: Center(
+                      child: Text('Loading ....'),
+                    ),
+                  )),
       ),
     );
   }

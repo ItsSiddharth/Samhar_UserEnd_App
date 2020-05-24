@@ -9,7 +9,7 @@
     <application
         tools:replace="android:label"
         android:name="io.flutter.app.FlutterApplication"
-        android:label="samhar_user"
+        android:label="Third Eye"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"

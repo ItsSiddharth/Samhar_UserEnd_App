@@ -52,7 +52,7 @@ void maybeStartFGS() async {
   print('Starting FGS');
   print('Done!');
   if (!(await ForegroundService.foregroundServiceIsStarted())) {
-    await ForegroundService.setServiceIntervalSeconds(5); //necessity of editMode is dubious (see function comments) await ForegroundService.notification.startEditMode();
+    await ForegroundService.setServiceIntervalSeconds(300); //necessity of editMode is dubious (see function comments) await ForegroundService.notification.startEditMode();
     await ForegroundService.notification
         .setTitle("Location stream is ON");
     await ForegroundService.notification
@@ -217,6 +217,7 @@ class _CovidStatsState extends State<CovidStats> {
               print('Foreground process started!');
             }
           },
+
           child: Tooltip(
             showDuration: Duration(),
             message: 'Stop Collecting Location Data',
